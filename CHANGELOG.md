@@ -3,6 +3,18 @@
 All notable changes to Reasonix. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.50.1] — 2026-05-24
+
+**Install fix — `postinstall` no longer crashes on `npx`.** The
+`postinstall` hook added in 0.50.0 (#1584) ran `npm ci` inside
+`dashboard/` and `desktop/` to set up the dev workspace, but those
+directories aren't shipped in the published tarball. Result: `npx
+reasonix@0.50.0 code` failed during install with a `dashboard/package.json
+not found` error and the CLI never started. `postinstall` now delegates
+to `scripts/postinstall.mjs`, which exits 0 when `dashboard/package.json`
+is missing (i.e. anywhere except a git checkout). 0.50.0 is deprecated
+on npm.
+
 ## [0.50.0] — 2026-05-24
 
 **Desktop dashboard — unified on the CLI-hosted React surface.** The
