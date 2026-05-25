@@ -57,6 +57,7 @@ export interface OpenAICompatEmbeddingUserConfig {
   model?: string;
   extraBody?: Record<string, unknown>;
   batchSize?: number;
+  timeoutMs?: number;
 }
 
 export interface SemanticEmbeddingUserConfig {
@@ -363,7 +364,7 @@ export function loadExaApiKey(path: string = defaultConfigPath()): string | unde
 
 const DEFAULT_OLLAMA_URL = "http://localhost:11434";
 const DEFAULT_EMBED_MODEL = "nomic-embed-text";
-const DEFAULT_TIMEOUT_MS = 30_000;
+const DEFAULT_TIMEOUT_MS = 180_000;
 const DEFAULT_BATCH_SIZE = 10;
 
 export function defaultConfigPath(): string {
@@ -1323,7 +1324,7 @@ export function resolveSemanticEmbeddingConfig(
       apiKey,
       model,
       extraBody: normalizeExtraBody(user.openaiCompat?.extraBody),
-      timeoutMs: DEFAULT_TIMEOUT_MS,
+      timeoutMs: user.openaiCompat?.timeoutMs ?? DEFAULT_TIMEOUT_MS,
       batchSize: user.openaiCompat?.batchSize ?? DEFAULT_BATCH_SIZE,
     };
   }
@@ -1401,6 +1402,7 @@ function normalizeSemanticEmbeddingUserConfig(
       apiKey: normalizeOptionalString(cfg?.openaiCompat?.apiKey),
       model: normalizeOptionalString(cfg?.openaiCompat?.model),
       extraBody: normalizeExtraBody(cfg?.openaiCompat?.extraBody),
+      timeoutMs: normalizePositiveInt(cfg?.openaiCompat?.timeoutMs),
       batchSize: normalizePositiveInt(cfg?.openaiCompat?.batchSize),
     },
   };
